@@ -7,24 +7,26 @@ from dateutil.relativedelta import relativedelta
 
 def tp_first_else_zero(data, future_data, f, s):
     if data.empty or future_data.empty or 'Close' not in data:
-        return None
+        return None  # falls kein Preis für den bestimmten Tag abgespeichert ist, überspringen
 
-    base = float(data['Close'].iloc[-1])
-    tp_level = base * (1.0 + float(f))
-    sl_level = base * (1.0 - float(s))
+    base = float(data['Close'].iloc[-1])  # Basispreis
+    tp_level = base * (1.0 + float(f))  # Preis bei Take Profit
+    sl_level = base * (1.0 - float(s))  # Preis beim Stop Loss
 
-    use_high = 'High' in future_data and not future_data['High'].empty
-    use_low = 'Low' in future_data and not future_data['Low'].empty
-    for _, row in future_data.iterrows():
-        high = float(row['High']) if use_high else float(row.get('Close', base))
-        low = float(row['Low']) if use_low else float(row.get('Close', base))
+    use_high = 'High' in future_data and not future_data['High'].empty  # Spalte 'High' in yf finden
+    use_low = 'Low' in future_data and not future_data['Low'].empty  # Spalte 'Low' in yf finden
+
+    for _, row in future_data.iterrows():  # für jede Kerze, chronologisch
+        high = float(row['High']) if use_high else float(row.get('Close', base))  # Hoch = Spalte 'High'
+        low = float(row['Low']) if use_low else float(row.get('Close', base))  # Hoch = Spalte 'Low'
 
         if low <= sl_level:
-            return 0
+            return 0  # falls das Tief unter dem SL-Preis liegt -> Label 0
         if high >= tp_level:
-            return 1
+            return 1  # falls statt des SL der TP getroffen wurde -> Label 1
 
-    return 0
+    return 0  # falls weder TP oder SL getroffen wurden, Label 0
+
 
 
 x = int(input("Total charts: "))  # Anzahl Charts pro Label und Symbol
