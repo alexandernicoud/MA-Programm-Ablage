@@ -152,3 +152,5 @@ def generate_and_save_labeled_charts():
 
 
 generate_and_save_labeled_charts()
+
+# Inspiration von: https://ranaroussi.github.io/yfinance/reference/index.html
