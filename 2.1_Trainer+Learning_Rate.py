@@ -118,3 +118,5 @@ history = model.fit(
 print("--- done ---")
 model.save(f"{model_name}")
 print(f"✅ Model saved as {model_name}")
+
+# Inspiration von: https://keras.io/examples/
